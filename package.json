@@ -1,0 +1,25 @@
+{
+  "name": "gpt-engineer-langchain",
+  "description": "A port of GPT Engineer to LangChain.js",
+  "version": "0.0.1",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "keywords": [
+    "gpt",
+    "chatgpt",
+    "langchain"
+  ],
+  "author": "Nick Nance",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.3.3",
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "langchain": "^0.0.102"
+  }
+}
