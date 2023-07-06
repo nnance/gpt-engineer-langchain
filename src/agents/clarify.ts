@@ -3,7 +3,7 @@ import { initializeAgentExecutorWithOptions } from "langchain/agents";
 import { createHumanInputTool } from "../tools/humanInput";
 import { PromptTemplate } from "langchain/prompts";
 
-export const runChatExecutor = async (model: ChatOpenAI) => {
+export const runChatExecutor = async (model: ChatOpenAI, input: string) => {
   const tools = [createHumanInputTool()];
 
   const executor = await initializeAgentExecutorWithOptions(tools, model, {
@@ -18,9 +18,10 @@ export const runChatExecutor = async (model: ChatOpenAI) => {
       `
   );
 
-  const input = await prompt.format({
+  const fullPrompt = await prompt.format({
+    input,
     tools: tools.map((tool) => `${tool.name}: ${tool.description}`).join(", "),
   });
 
-  return executor.run(input);
+  return executor.run(fullPrompt);
 };

@@ -11,9 +11,14 @@ const createLLM = (openAIApiKey: string) => {
   });
 };
 
+const input = `
+Your a chat bot and you should try to find out the name of the human.
+Once you know their name you must always confirm by asking them if you have the correct name.
+`;
+
 const main = async () => {
   const model = createLLM(process.env.OPENAI_API_KEY!);
-  const result = await runChatExecutor(model);
+  const result = await runChatExecutor(model, input);
   console.log(result);
 };
 
