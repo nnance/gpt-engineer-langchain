@@ -4,7 +4,8 @@ import * as ReadLine from "readline/promises";
 export const createHumanInputTool = () => {
   return new DynamicTool({
     name: "human_input",
-    description: "use this tool when you want to get input from a human",
+    description:
+      "use this tool when you want to get input from a human or ask them a question",
     func: async (prompt) => {
       const readline = ReadLine.createInterface({
         input: process.stdin,
