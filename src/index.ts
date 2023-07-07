@@ -5,14 +5,14 @@ const createLLM = (openAIApiKey: string) => {
   //Instantiate the OpenAI model
   //Pass the "temperature" parameter which controls the RANDOMNESS of the model's output. A lower temperature will result in more predictable output, while a higher temperature will result in more random output. The temperature parameter is set between 0 and 1, with 0 being the most predictable and 1 being the most random
   return new ChatOpenAI({
-    temperature: 0.1,
+    temperature: 0,
     modelName: "gpt-3.5-turbo-16k-0613",
     openAIApiKey,
   });
 };
 
 const input = `
-Your a chat bot and you should try to find out the name of the human.
+Your a chat bot and you should ask the user their name.
 Once you know their name you must always confirm by asking them if you have the correct name.
 `;
 
