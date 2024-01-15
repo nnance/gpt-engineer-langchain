@@ -20,8 +20,10 @@ import {
   InputValues,
   PartialValues,
 } from "langchain/schema";
-import { Tool } from "langchain/tools";
 import { createHumanInputTool } from "../tools/humanInput";
+import { SerpAPI, Tool } from "langchain/tools";
+import { Calculator } from "langchain/tools/calculator";
+import { PlanAndExecuteAgentExecutor } from "langchain/experimental/plan_and_execute";
 
 const PREFIX = `Answer the following questions as best you can. You have access to the following tools:`;
 const formatInstructions = (
@@ -73,6 +75,7 @@ class CustomPromptTemplate extends BaseChatPromptTemplate {
     const newInput = { agent_scratchpad: agentScratchpad, ...values };
     /** Format the template. */
     const formatted = renderTemplate(template, "f-string", newInput);
+    console.log(formatted);
     return [new HumanChatMessage(formatted)];
   }
 
@@ -101,11 +104,15 @@ class CustomOutputParser extends AgentActionOutputParser {
       throw new Error(`Could not parse LLM output: ${text}`);
     }
 
-    return {
+    const results = {
       tool: match[1].trim(),
       toolInput: match[2].trim().replace(/^"+|"+$/g, ""),
       log: text,
     };
+
+    console.log(results);
+
+    return results;
   }
 
   getFormatInstructions(): string {
@@ -113,9 +120,17 @@ class CustomOutputParser extends AgentActionOutputParser {
   }
 }
 
-export const runChatExecutor = async (model: ChatOpenAI, input: string) => {
-  const tools = [createHumanInputTool()];
-
+export const runChatExecutor = async (llm: ChatOpenAI, input: string) => {
+  const tools = [
+    new SerpAPI(process.env.SERPAPI_API_KEY, {
+      location: "Austin,Texas,United States",
+      hl: "en",
+      gl: "us",
+    }),
+    new Calculator(),
+    createHumanInputTool(),
+  ];
+  /*
   const llmChain = new LLMChain({
     prompt: new CustomPromptTemplate({
       tools,
@@ -129,10 +144,8 @@ export const runChatExecutor = async (model: ChatOpenAI, input: string) => {
     outputParser: new CustomOutputParser(),
     stop: ["\nObservation"],
   });
-  const executor = new AgentExecutor({
-    agent,
-    tools,
-  });
+  */
+  const executor = PlanAndExecuteAgentExecutor.fromLLMAndTools({ llm, tools });
 
   return executor.call({ input });
 };
